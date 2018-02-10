@@ -14,7 +14,7 @@ app.get('/html.pdf', async (req, res) => {
     let { render_pdf } = require('./render_pdf.js');
     res.end(await render_pdf(`
       <div>Sorry, you need to do a POST request to make this work</div>
-    `, {}, cache));
+    `, { /* default options */ }, cache));
   } catch (require_error) {
     console.error(`Error during \`require('./render_pdf.js')\``);
     console.error(require_error);
