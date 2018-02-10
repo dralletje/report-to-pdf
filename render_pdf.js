@@ -8,11 +8,18 @@ let fallback_html = `
   <div>No <pre>{ html_body }</pre> provided!</div>
 `
 
+let create_browser = async () => {
+  return await puppeteer.launch({
+    // No sandbox: living on the (heroku) edge
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+  });
+}
+
 let render_pdf = async (html_body = fallback_html, options = {}, cache) => {
   await check_options(options);
 
   console.time('retrieve browser and page');
-  cache.browser = cache.browser || await puppeteer.launch();
+  cache.browser = cache.browser || await create_browser();
   cache.pages = cache.pages || [await cache.browser.newPage()];
   console.timeEnd('retrieve browser and page');
 
