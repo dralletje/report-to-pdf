@@ -1,0 +1,33 @@
+{
+  "name": "puppeteer-pap",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@babel/polyfill": "^7.0.0-beta.39",
+    "babel-core": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "babel-watch": "^2.0.7",
+    "cors": "^2.8.4",
+    "express": "^4.16.2",
+    "puppeteer": "^1.0.0"
+  },
+  "babel": {
+    "presets": [
+      [
+        "env",
+        {
+          "useBuiltIns": "usage"
+        }
+      ],
+      "stage-0"
+    ]
+  }
+}
