@@ -16,6 +16,8 @@ let generate_uuid = () => {
 let cache = {};
 let options_cache = {};
 
+app.use(express.static('public'));
+
 app.get('/html.pdf', async (req, res) => {
 
   try {

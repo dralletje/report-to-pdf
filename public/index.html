@@ -1,0 +1,79 @@
+<html>
+<head>
+  <meta charset="utf8utf-8" />
+  <title>Report to PDF</title>
+
+  <style>
+    textarea {
+      font-family: monospace;
+      letter-spacing: 1px;
+      border: none;
+      background-color: #001f65;
+      color: #eee;
+      padding: 20px;
+      height: 400px;
+      margin-bottom: 20px;
+    }
+
+    button {
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script src="https://fb.me/react-15.0.0.js"></script>
+  <script src="https://fb.me/react-dom-15.0.0.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.7.5/beautify-html.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
+  <script src="/client.js"></script>
+
+  <script type="text/babel">
+    class App extends React.Component {
+      constructor() {
+        super();
+        this.state = {
+          html_body: localStorage.getItem('HTML_BODY') || `<div>Hey</div>`,
+        };
+      }
+
+      componentDidUpdate() {
+        localStorage.setItem('HTML_BODY', this.state.html_body);
+      }
+
+      render() {
+        let { html_body } = this.state;
+
+        return (
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'stretch' }}>
+            <p>Sorry, the editor is not very good</p>
+
+            <textarea value={html_body} onChange={(e) => {
+              this.setState({ html_body: e.target.value });
+            }}/>
+
+            <div>
+              <button onClick={() => {
+                this.setState({ html_body: html_beautify(html_body) })
+              }}>Beautify</button>
+              <button onClick={() => {
+                download_pdf_from_html({
+                  html_body,
+                })
+                .catch(err => {
+                  console.log(err.stack);
+                  alert(err.message);
+                })
+              }}>To PDF!</button>
+
+            </div>
+          </div>
+        )
+      }
+    }
+
+    ReactDOM.render(<App />, document.querySelector('#root'));
+  </script>
+</body>
+</html>

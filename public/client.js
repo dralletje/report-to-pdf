@@ -13,6 +13,8 @@ let download_pdf_from_html = async ({ html_body, pdf_options, filename }) => {
   window.location.href = `${REPORT_TO_PDF_URL}${pdf_path}`;
 }
 
+window.download_pdf_from_html = download_pdf_from_html;
+
 /*
 download_pdf_from_html({
   html_body: '<h1>Hey!</h1>',
