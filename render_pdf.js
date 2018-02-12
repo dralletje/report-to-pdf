@@ -61,7 +61,13 @@ let render_pdf = async (html_body = fallback_html, options = {}, cache) => {
     console.time('pdf');
     console.log(`options:`, options)
     let default_margin = { top: '50px', bottom: '50px', left: '50px', right: '50px' };
-    let pdf_buffer = await page.pdf({ pageRanges: '1', format: 'A4', ...options, margin: { ...default_margin, ...options.margin } });
+    let pdf_buffer = await page.pdf({
+      printBackground: true,
+      pageRanges: '1',
+      format: 'A4',
+      ...options,
+      margin: { ...default_margin, ...options.margin },
+    });
     console.timeEnd('pdf');
 
     return pdf_buffer;
