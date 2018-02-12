@@ -1,0 +1,13 @@
+{
+  "name": "Report to PDF",
+  "description": "Small webapp to generate pdf screenshots from html",
+  "success_url": "/",
+  "buildpacks": [
+    {
+      "url": "https://github.com/jontewks/puppeteer-heroku-buildpack"
+    },
+    {
+      "url": "heroku/nodejs"
+    }
+  ]
+}
