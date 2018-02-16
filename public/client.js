@@ -40,8 +40,8 @@ window.download_pdf_from_url = download_pdf_from_url;
 
 /*
 download_pdf_from_url({
-  html_body: '<h1>Hey!</h1>',
-  pdf_options: { landscape: true },
+  url: 'http://localhost:5000/html.pdf?id=cbfaf110-50b9-3345-5446-e8112a6ec23d',
+  pdf_options: { landscape: false, pageRanges: '1-3' },
   filename: 'my-report.pdf',
-})
+});
 */
