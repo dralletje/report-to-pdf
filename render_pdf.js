@@ -25,7 +25,7 @@ let create_page = async (browser) => {
   return page;
 }
 
-let render_pdf = async (html_body = fallback_html, options = {}, cache) => {
+let render_pdf = async (load_page, options = {}, cache) => {
   await check_options(options);
 
   console.log('\n\n>> NEW REQUEST');
@@ -53,9 +53,7 @@ let render_pdf = async (html_body = fallback_html, options = {}, cache) => {
 
     console.time('loadpage');
     // await page.reload({ waitUntil: 'networkidle0' });
-    await page.goto(`data:text/html,<html>${html_body}</html>`, {
-      timeout: 5000,
-    });
+    await load_page(page);
     console.timeEnd('loadpage');
 
     console.time('pdf');
@@ -76,6 +74,38 @@ let render_pdf = async (html_body = fallback_html, options = {}, cache) => {
   }
 }
 
+let load_html = (html_body) => async (page) => {
+  await page.goto(`data:text/html,<html>${html_body}</html>`, {
+    timeout: 5000,
+  });
+}
+
+let load_url = (url) => async (page) => {
+  await page.goto(url, {
+    timeout: 5000,
+  });
+}
+
+let render_from_url = async (req, res, cache) => {
+  try {
+    console.time('FULL RENDER');
+    let { url, pdf_options, filename } = req.body;
+
+    res.set({
+      "Content-Transfer-Encoding": "Binary",
+      'Content-Type': 'application/octet-stream',
+      "Content-disposition": `attachment; filename="${filename || 'report.pdf'}"`
+    });
+
+    res.end(await render_pdf(load_url(url), pdf_options, cache));
+    console.timeEnd('FULL RENDER');
+  } catch (render_err) {
+    console.error(`Error during \`render_pdf(req, res)\``);
+    console.error(render_err);
+    res.end('Sorry')
+  }
+}
+
 let render_response = async (req, res, cache) => {
   try {
     console.time('FULL RENDER');
@@ -87,7 +117,7 @@ let render_response = async (req, res, cache) => {
       "Content-disposition": `attachment; filename="${filename || 'report.pdf'}"`
     });
 
-    res.end(await render_pdf(html_body, pdf_options, cache));
+    res.end(await render_pdf(load_html(html_body), pdf_options, cache));
     console.timeEnd('FULL RENDER');
   } catch (render_err) {
     console.error(`Error during \`render_pdf(req, res)\``);
@@ -96,4 +126,4 @@ let render_response = async (req, res, cache) => {
   }
 }
 
-module.exports = { render_response, render_pdf };
+module.exports = { render_response, render_pdf, render_from_url };

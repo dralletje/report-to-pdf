@@ -25,14 +25,28 @@ app.get('/html.pdf', async (req, res) => {
       delete require.cache[require.resolve('./render_pdf.js')];
     }
 
-    req.body = options_cache[req.query.id];
+    let pdf_request = options_cache[req.query.id];
     delete options_cache[req.query.id];
 
-    let { render_response } = require('./render_pdf.js');
-    await render_response(req, res, cache);
+    if (pdf_request.type === 'by_html') {
+      req.body = pdf_request.options;
+      let { render_response } = require('./render_pdf.js');
+      await render_response(req, res, cache);
+    }
+    else if (pdf_request.type === 'by_url') {
+      req.body = pdf_request.options;
+      let { render_from_url } = require('./render_pdf.js');
+      await render_from_url(req, res, cache);
+    }
+    else {
+      throw new Error(`Really really weird`);
+    }
   } catch (require_error) {
     console.error(`Error during \`require('./render_pdf.js')\``);
     console.error(require_error);
+    res.end(JSON.stringify({
+      error: require_error.message,
+    }))
   }
 
   //
@@ -52,7 +66,28 @@ app.get('/html.pdf', async (req, res) => {
 app.post('/request_pdf_path', async (req, res) => {
   let body = req.body;
   let uuid = generate_uuid();
-  options_cache[uuid] = req.body;
+  options_cache[uuid] = {
+    type: 'by_html',
+    options: body,
+  };
+
+  res.end(JSON.stringify({
+    pdf_path: `/html.pdf?id=${uuid}`,
+  }));
+});
+
+app.post('/request_pdf_path_by_url', async (req, res) => {
+  let body = req.body;
+
+  if (!body.url) {
+    return res.end(`No url given...`);
+  }
+
+  let uuid = generate_uuid();
+  options_cache[uuid] = {
+    type: 'by_url',
+    options: body,
+  };
 
   res.end(JSON.stringify({
     pdf_path: `/html.pdf?id=${uuid}`,
