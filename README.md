@@ -11,9 +11,15 @@ $ npm install
 $ npm start
 ```
 
-```
-* Use code in client.js on your page *
-```
+### Use in browser
+
+Look at `public/client.js`
+
+### Use in node
+
+Look at `public/node.js`
+
+### More questions?
 
 **really?** yes  
 **No setup instructions for Chrome or phanto-** no  

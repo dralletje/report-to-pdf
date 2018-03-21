@@ -18,6 +18,25 @@ let options_cache = {};
 
 app.use(express.static('public'));
 
+app.post('/html_from_url.pdf', async (req, res) => {
+  try {
+    if (process.env.NODE_ENV === 'development') {
+      delete require.cache[require.resolve('./render_pdf.js')];
+    }
+
+    let pdf_request = req.body;
+
+    let { render_from_url } = require('./render_pdf.js');
+    await render_from_url(req, res, cache);
+  } catch (require_error) {
+    console.error(`Error during \`require('./render_pdf.js')\``);
+    console.error(require_error);
+    res.end(JSON.stringify({
+      error: require_error.message,
+    }))
+  }
+});
+
 app.get('/html.pdf', async (req, res) => {
 
   try {
@@ -48,19 +67,6 @@ app.get('/html.pdf', async (req, res) => {
       error: require_error.message,
     }))
   }
-
-  //
-  // try {
-  //   delete require.cache[require.resolve('./render_pdf.js')]
-  //   let { render_pdf } = require('./render_pdf.js');
-  //   res.end(await render_pdf(`
-  //     <div>Sorry, you need to do a POST request to make this work</div>
-  //   `, { /* default options */ }, cache));
-  // } catch (require_error) {
-  //   console.error(`Error during \`require('./render_pdf.js')\``);
-  //   console.error(require_error);
-  // }
-
 })
 
 app.post('/request_pdf_path', async (req, res) => {
