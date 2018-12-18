@@ -82,7 +82,7 @@ let load_html = (html_body) => async (page) => {
 
 let load_url = (url) => async (page) => {
   await page.goto(url, {
-    timeout: 5000,
+    timeout: 15000, // increased for large PDF's
   });
 }
 
